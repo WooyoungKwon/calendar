@@ -62,7 +62,7 @@ public class DataInitializer {
         Flux.fromIterable(yearList)
             .flatMap(year -> Flux.fromIterable(countryList)
                 .flatMap(country -> {
-                    Mono<List<HolidayDto>> fetchHolidaysMono = holidayService.fetchHolidays(year, country.getCode());
+                    Mono<List<HolidayDto>> fetchHolidaysMono = holidayService.fetchHolidays(year, country.getCountryCode());
                     return fetchHolidaysMono.flatMap(holidayDto -> holidayService.saveHolidays(country, holidayDto));
                 }, 10)
             )

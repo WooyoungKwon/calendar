@@ -54,7 +54,7 @@ class CountryServiceTest {
         assertEquals(mockCountryDtoList.size(), savedCountryList.size());
         // 저장된 Country 리스트의 첫 번째와 마지막 요소의 코드와 이름이 mockCountryDtoList와 일치하는가
         assertEquals(mockCountryDtoList.getFirst().getName(), savedCountryList.getFirst().getName());
-        assertEquals(mockCountryDtoList.getLast().getCode(), savedCountryList.getLast().getCode());
+        assertEquals(mockCountryDtoList.getLast().getCountryCode(), savedCountryList.getLast().getCountryCode());
     }
 
 }

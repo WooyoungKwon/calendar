@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CountryDto {
-    private String code;
+    private String countryCode;
     private String name;
 }

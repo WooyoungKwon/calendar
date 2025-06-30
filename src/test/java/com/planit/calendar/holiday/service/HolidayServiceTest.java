@@ -35,7 +35,7 @@ class HolidayServiceTest {
     @DisplayName("HolidayDto 리스트를 Holiday 엔티티로 변환하여 Repository에 저장하고 저장된 Holiday 리스트를 반환한다")
     void 공휴일저장_공휴일_데이터_저장에_성공하고_저장된_공휴일_리스트를_반환한다() {
         // given
-        Country country = Country.builder().code("US").name("United States").build();
+        Country country = Country.builder().countryCode("US").name("United States").build();
         List<HolidayDto> mockHolidayDtoList = Arrays.asList(
             new HolidayDto(
                 "2025-01-01",
