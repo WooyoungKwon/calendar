@@ -16,12 +16,13 @@ import reactor.core.scheduler.Schedulers;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CountryService {
 
     private final WebClient webClient;
     private final CountryRepository countryRepository;
 
-    public Mono<List<CountryDto>> fetchAvailableCountries() {
+    public Mono<List<CountryDto>> fetchCountries() {
         log.info("외부 API에서 국가 데이터 목록을 조회합니다.");
         return webClient.get()
             .uri("/api/v3/AvailableCountries")
