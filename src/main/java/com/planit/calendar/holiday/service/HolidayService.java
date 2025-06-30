@@ -2,7 +2,7 @@ package com.planit.calendar.holiday.service;
 
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.repository.CountryRepository;
-import com.planit.calendar.holiday.HolidayDto;
+import com.planit.calendar.holiday.dto.HolidayDto;
 import com.planit.calendar.holiday.domain.Holiday;
 import com.planit.calendar.holiday.repository.HolidayRepository;
 import java.util.List;
@@ -43,8 +43,8 @@ public class HolidayService {
                     .localName(holidayDto.getLocalName())
                     .name(holidayDto.getName())
                     .country(country)
-                    .fixed(holidayDto.getFixed())
-                    .global(holidayDto.getGlobal())
+                    .fixed(holidayDto.isFixed())
+                    .global(holidayDto.isGlobal())
                     .counties(holidayDto.getCounties())
                     .launchYear(holidayDto.getLaunchYear())
                     .types(holidayDto.getTypes())

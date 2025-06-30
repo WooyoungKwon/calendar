@@ -4,15 +4,13 @@ import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.dto.CountryDto;
 import com.planit.calendar.country.repository.CountryRepository;
 import com.planit.calendar.country.service.CountryService;
-import com.planit.calendar.holiday.HolidayDto;
-import com.planit.calendar.holiday.domain.Holiday;
+import com.planit.calendar.holiday.dto.HolidayDto;
 import com.planit.calendar.holiday.repository.HolidayRepository;
 import com.planit.calendar.holiday.service.HolidayService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -23,7 +21,6 @@ import reactor.core.scheduler.Schedulers;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@Profile("!test") // 테스트 환경에서는 실행 X
 public class DataInitializer {
 
     private final CountryService countryService;

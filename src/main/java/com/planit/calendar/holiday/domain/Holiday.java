@@ -13,9 +13,11 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor
 public class Holiday {
 
@@ -55,13 +57,13 @@ public class Holiday {
     private Country country;
 
     @Builder
-    public Holiday(String date, String localName, String name, String fixed, String global, List<String> counties,
+    public Holiday(String date, String localName, String name, boolean fixed, boolean global, List<String> counties,
         String launchYear, List<String> types, Country country) {
         this.date = LocalDate.parse(date);
         this.localName = localName;
         this.name = name;
-        this.fixed = fixed.equals("true");
-        this.global = global.equals("true");
+        this.fixed = fixed;
+        this.global = global;
         this.counties = counties;
         this.launchYear = launchYear != null ? Integer.parseInt(launchYear) : null;
         this.types = types;

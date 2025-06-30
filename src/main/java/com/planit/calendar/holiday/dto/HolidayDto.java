@@ -1,4 +1,4 @@
-package com.planit.calendar.holiday;
+package com.planit.calendar.holiday.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,8 @@ public class HolidayDto {
     private String localName;
     private String name;
     private String countryCode;
-    private String fixed;
-    private String global;
+    private boolean fixed;
+    private boolean global;
     private List<String> counties;
     private String launchYear;
     private List<String> types;
