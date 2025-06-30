@@ -35,14 +35,14 @@ public class CountryService {
     public Mono<List<Country>> saveCountries(List<CountryDto> countryDtoList) {
         log.info("조회된 {}개 국가 데이터를 DB에 저장합니다.", countryDtoList.size());
 
-        // DTO를 엔티티로 변환
+        // DTO를 엔티티로 변환하며 중복값을 제거한다
         List<Country> countryList = countryDtoList.stream()
             .map(countryDto ->
                 Country.builder()
-                    .code(countryDto.getCode())
+                    .countryCode(countryDto.getCountryCode())
                     .name(countryDto.getName())
                     .build()
-            ).toList();
+            ).distinct().toList();
 
         // Mono 객체를 별도 스레드에서 실행하며 DB에 벌크 저장
         return Mono.fromCallable(() -> countryRepository.saveAll(countryList))

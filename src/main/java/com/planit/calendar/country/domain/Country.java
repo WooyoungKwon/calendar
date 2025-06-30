@@ -15,25 +15,33 @@ import lombok.NoArgsConstructor;
 public class Country {
 
     @Id @GeneratedValue
-    @Column(name = "country_id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @Column(name = "country_name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "country_code", nullable = false, unique = true)
-    private String code;
+    private String countryCode;
 
     @Builder
-    public Country(String name, String code) {
-        if (code == null || code.length() != 2) {
+    public Country(String name, String countryCode) {
+        if (countryCode == null || countryCode.length() != 2) {
             throw new IllegalArgumentException("국가 코드는 반드시 2글자여야 하며 비어있을 수 없습니다.");
         }
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("국가 이름은 비어있을 수 없습니다.");
         }
         this.name = name;
-        this.code = code.toUpperCase();
+        this.countryCode = countryCode.toUpperCase();
     }
 
+    // code와 name 중 하나라도 같으면 같은 국가로 간주한다
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Country)) return false;
+        Country country = (Country) obj;
+        return countryCode.equals(country.countryCode) || name.equals(country.name);
+    }
 }
