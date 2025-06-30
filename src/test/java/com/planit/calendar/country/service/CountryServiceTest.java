@@ -31,8 +31,8 @@ class CountryServiceTest {
     private CountryService countryService;
 
     @Test
-    @DisplayName("CountryDto 리스트를 Country 엔티티로 변환하여 Repository에 저장한다")
-    void saveCountries_convertsAndSavesEntities() {
+    @DisplayName("CountryDto 리스트를 Country 엔티티로 변환하여 Repository에 저장하고 저장된 Country 리스트를 반환한다")
+    void 국가저장_국가_데이터_저장에_성공하고_저장된_국가_리스트를_반환한다() {
         // given
         List<CountryDto> mockCountryDtoList = Arrays.asList(
             new CountryDto("T1", "testname1"),
@@ -49,11 +49,12 @@ class CountryServiceTest {
         // saveAll() 메서드 1번 호출
         verify(countryRepository, times(1)).saveAll(anyList());
 
-        // 반환한 데이터가 올바른지 검증
         assertNotNull(savedCountryList);
-        assertEquals(3, savedCountryList.size());
-        assertEquals("testname1", savedCountryList.getFirst().getName());
-        assertEquals("T3", savedCountryList.getLast().getCode());
+        // 저장된 Country 리스트의 크기와 내용이 mockCountryDtoList와 일치하는가
+        assertEquals(mockCountryDtoList.size(), savedCountryList.size());
+        // 저장된 Country 리스트의 첫 번째와 마지막 요소의 코드와 이름이 mockCountryDtoList와 일치하는가
+        assertEquals(mockCountryDtoList.getFirst().getName(), savedCountryList.getFirst().getName());
+        assertEquals(mockCountryDtoList.getLast().getCode(), savedCountryList.getLast().getCode());
     }
 
 }

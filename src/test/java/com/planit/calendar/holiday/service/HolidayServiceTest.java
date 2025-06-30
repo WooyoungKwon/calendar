@@ -32,8 +32,8 @@ class HolidayServiceTest {
     private HolidayService holidayService;
 
     @Test
-    @DisplayName("DTO 리스트를 엔티티로 변환하여 Repository에 저장한다")
-    void saveCountries_convertsAndSavesEntities() {
+    @DisplayName("HolidayDto 리스트를 Holiday 엔티티로 변환하여 Repository에 저장하고 저장된 Holiday 리스트를 반환한다")
+    void 공휴일저장_공휴일_데이터_저장에_성공하고_저장된_공휴일_리스트를_반환한다() {
         // given
         Country country = Country.builder().code("US").name("United States").build();
         List<HolidayDto> mockHolidayDtoList = Arrays.asList(
@@ -46,7 +46,7 @@ class HolidayServiceTest {
                 true,
                 null,
                 null,
-                List.of("Public") // List.of() 사용
+                List.of("Public")
             ),
             new HolidayDto(
                 "2025-01-20",
@@ -57,7 +57,7 @@ class HolidayServiceTest {
                 true,
                 null,
                 null,
-                List.of("Public") // List.of() 사용
+                List.of("Public")
             ),
             new HolidayDto(
                 "2025-02-12",
@@ -66,10 +66,9 @@ class HolidayServiceTest {
                 "US",
                 false,
                 false,
-                // List.of() 사용
                 List.of("US-CA", "US-CT", "US-IL", "US-IN", "US-KY", "US-MI", "US-NY", "US-MO", "US-OH"),
                 null,
-                List.of("Observance") // List.of() 사용
+                List.of("Observance")
             )
         );
 
@@ -89,5 +88,6 @@ class HolidayServiceTest {
         // 첫 번째 공휴일의 이름과 국가가 mock 데이터와 일치하는가
         assertEquals(mockHolidayDtoList.getFirst().getName(), savedHolidayList.getFirst().getName());
         assertEquals(country, savedHolidayList.getFirst().getCountry());
+        assertEquals(mockHolidayDtoList.getLast().getTypes(), savedHolidayList.getLast().getTypes());
     }
 }

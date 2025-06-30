@@ -39,7 +39,7 @@ public class CountryService {
         List<Country> countryList = countryDtoList.stream()
             .map(countryDto ->
                 Country.builder()
-                    .code(countryDto.getCountryCode())
+                    .code(countryDto.getCode())
                     .name(countryDto.getName())
                     .build()
             ).toList();
