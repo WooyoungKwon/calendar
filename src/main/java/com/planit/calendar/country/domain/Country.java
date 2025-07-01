@@ -36,6 +36,16 @@ public class Country {
         this.countryCode = countryCode.toUpperCase();
     }
 
+    /**
+     * 테스트용 빌더 생성자
+     */
+    @Builder(builderMethodName = "withId", access = AccessLevel.PRIVATE)
+    private Country(Long id, String name, String countryCode) {
+        this.id = id;
+        this.name = name;
+        this.countryCode = countryCode.toUpperCase();
+    }
+
     // code와 name 중 하나라도 같으면 같은 국가로 간주한다
     @Override
     public boolean equals(Object obj) {

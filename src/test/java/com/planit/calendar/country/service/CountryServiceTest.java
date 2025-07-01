@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.dto.CountryDto;
 import com.planit.calendar.country.repository.CountryRepository;
-import java.util.Arrays;
+import com.planit.calendar.textFixture.TestFixture;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,12 +34,7 @@ class CountryServiceTest {
     @DisplayName("CountryDto 리스트를 Country 엔티티로 변환하여 Repository에 저장하고 저장된 Country 리스트를 반환한다")
     void 국가저장_국가_데이터_저장에_성공하고_저장된_국가_리스트를_반환한다() {
         // given
-        List<CountryDto> mockCountryDtoList = Arrays.asList(
-            new CountryDto("T1", "testname1"),
-            new CountryDto("T2", "testname2"),
-            new CountryDto("T3", "testname3")
-        );
-
+        List<CountryDto> mockCountryDtoList = TestFixture.countryDtoListFixtureTest();
 
         // when
         when(countryRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
