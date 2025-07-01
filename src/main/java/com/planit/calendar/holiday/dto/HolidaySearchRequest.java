@@ -1,6 +1,5 @@
 package com.planit.calendar.holiday.dto;
 
-import com.planit.calendar.response.ResponseCode;
 import jakarta.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

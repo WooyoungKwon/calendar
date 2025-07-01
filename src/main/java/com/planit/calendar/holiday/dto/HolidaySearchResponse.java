@@ -1,23 +1,23 @@
 package com.planit.calendar.holiday.dto;
 
-import com.planit.calendar.response.ResponseCode;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class HolidaySearchResponse {
 
-    private String countryName;
+    private String condition;
     private long totalCount;
     private int totalPageCount;
     private int currentCount;
-    private List<HolidayInfoDto> holidays;
+    private List<? extends HolidayInfoDto> holidays;
 
     public static HolidaySearchResponse of(String countryName, long totalCount, int totalPageCount,
-        int currentCount,
-        List<HolidayInfoDto> holidays) {
+        int currentCount, List<? extends HolidayInfoDto> holidays) {
         return new HolidaySearchResponse(countryName, totalCount, totalPageCount, currentCount, holidays);
     }
 }

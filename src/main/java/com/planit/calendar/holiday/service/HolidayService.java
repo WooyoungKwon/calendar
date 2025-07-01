@@ -6,11 +6,15 @@ import com.planit.calendar.exception.custom.NotFoundException;
 import com.planit.calendar.holiday.dto.HolidayDto;
 import com.planit.calendar.holiday.domain.Holiday;
 import com.planit.calendar.holiday.dto.HolidayInfoDto;
+import com.planit.calendar.holiday.dto.HolidayInfoWithCountry;
 import com.planit.calendar.holiday.dto.HolidayPageableDto;
+import com.planit.calendar.holiday.dto.HolidaySearchByCountryRequest;
 import com.planit.calendar.holiday.dto.HolidaySearchRequest;
 import com.planit.calendar.holiday.dto.HolidaySearchResponse;
 import com.planit.calendar.holiday.repository.HolidayRepository;
 import com.planit.calendar.response.ResponseCode;
+import com.planit.calendar.response.ResponseDto;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,10 +74,10 @@ public class HolidayService {
     public HolidaySearchResponse getHolidaysByConditions(HolidayPageableDto holidayPageableDto,
         HolidaySearchRequest holidaySearchRequest) {
 
-        Pageable pageable = holidayPageableDto.toPageable();
-
         Country country = countryRepository.findById(holidaySearchRequest.getCountryId())
             .orElseThrow(() -> new NotFoundException("해당 국가를 찾을 수 없습니다."));
+
+        Pageable pageable = holidayPageableDto.toPageable();
 
         // 나라와 연도 시작, 연도 끝 사이에 있는 공휴일 데이터를 페이징하여 조회
         Page<Holiday> holidayByCountryAndDateList = holidayRepository.findByCountry_IdAndDateBetween(
@@ -85,8 +89,27 @@ public class HolidayService {
         List<HolidayInfoDto> holidayInfoDtoList = HolidayInfoDto.from(
             holidayByCountryAndDateList.getContent());
 
+        String condition = String.format("나라: %s, 날짜 범위: %s ~ %s",
+            country.getName(), holidaySearchRequest.getBeforeYear(),
+            holidaySearchRequest.getAfterYear());
+
         // 페이징된 결과를 응답 객체로 변환하여 반환
-        return HolidaySearchResponse.of(country.getName(), holidayByCountryAndDateList.getTotalElements(),
-            holidayByCountryAndDateList.getTotalPages(), holidayInfoDtoList.size(), holidayInfoDtoList);
+        return HolidaySearchResponse.of(condition, holidayByCountryAndDateList.getTotalElements(),
+            holidayByCountryAndDateList.getTotalPages(), holidayInfoDtoList.size(),
+            holidayInfoDtoList);
+    }
+
+    public HolidaySearchResponse getHolidaysByYear(HolidayPageableDto holidayPageableDto,
+        HolidaySearchByCountryRequest request) {
+        Pageable pageable = holidayPageableDto.toPageable();
+
+        Page<HolidayInfoWithCountry> holidayInfoDtoList = holidayRepository.findByYear(
+            request.getYear(), pageable);
+
+        String condition = String.format("연도: %d년", request.getYear());
+
+        return HolidaySearchResponse.of(condition, holidayInfoDtoList.getTotalElements(),
+            holidayInfoDtoList.getTotalPages(), holidayInfoDtoList.getSize(),
+            holidayInfoDtoList.getContent());
     }
 }

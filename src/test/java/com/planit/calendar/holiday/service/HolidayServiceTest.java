@@ -93,7 +93,7 @@ class HolidayServiceTest {
 
         //then
         HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByConditions(
-            new HolidayPageableDto(page, size), request);
+            new HolidayPageableDto(page, size, "date"), request);
 
         assertNotNull(holidaysByConditions);
     }

@@ -40,4 +40,14 @@ public class HolidayController {
         return ResponseEntity.status(HttpStatus.OK)
             .body(ResponseDto.success(ResponseCode.HOLIDAY_SEARCH_SUCCESS, holidaysByConditions));
     }
+
+    @GetMapping("/year")
+    public ResponseEntity<ResponseDto<HolidaySearchResponse>> getHolidaysByYear(
+        @ModelAttribute @Valid HolidaySearchByCountryRequest request,
+        @ModelAttribute @Valid HolidayPageableDto holidayPageableDto
+    ) {
+        HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByYear(holidayPageableDto, request);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ResponseDto.success(ResponseCode.HOLIDAY_SEARCH_SUCCESS, holidaysByConditions));
+    }
 }
