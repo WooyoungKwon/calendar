@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -92,6 +93,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ExceptionResponseDto> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception, HttpServletRequest request) {
         log.warn("요청 파라미터 형식 오류. 요청 URI: {}, 예외 메시지: {}", request.getRequestURI(), exception.getMessage());
+        ResponseCode responseCode = ResponseCode.INVALID_PARAMETER;
+        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request, exception.getMessage());
+        return ResponseEntity.badRequest().body(exceptionResponseDto);
+    }
+
+    /**
+     * 요청 파라미터 유효성 검사 실패 시 BadRequest(400) 상태코드와 함께 에러 메시지를 반환한다.
+     * 2020년 ~ 2025년 사이의 값 외의 값이 들어오는 경우
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ExceptionResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletRequest request) {
+        log.warn("요청 파라미터 유효성 검사 실패. 요청 URI: {}, 예외 메시지: {}", request.getRequestURI(), exception.getMessage());
         ResponseCode responseCode = ResponseCode.INVALID_PARAMETER;
         ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request, exception.getMessage());
         return ResponseEntity.badRequest().body(exceptionResponseDto);

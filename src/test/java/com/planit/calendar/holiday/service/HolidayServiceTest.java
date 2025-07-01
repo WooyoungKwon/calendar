@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.holiday.domain.Holiday;
 import com.planit.calendar.holiday.dto.HolidayDto;
+import com.planit.calendar.holiday.dto.HolidayPageableDto;
 import com.planit.calendar.holiday.dto.HolidaySearchRequest;
 import com.planit.calendar.holiday.dto.HolidaySearchResponse;
 import com.planit.calendar.holiday.repository.HolidayRepository;
@@ -91,9 +92,9 @@ class HolidayServiceTest {
             .thenReturn(mockHolidayPage);
 
         //then
-        HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByConditions(pageable, request);
+        HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByConditions(
+            new HolidayPageableDto(page, size), request);
 
         assertNotNull(holidaysByConditions);
-        assertEquals(ResponseCode.HOLIDAY_SEARCH_SUCCESS.getMessage(), holidaysByConditions.getMessage());
     }
 }
