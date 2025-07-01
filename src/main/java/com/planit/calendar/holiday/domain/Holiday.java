@@ -69,4 +69,22 @@ public class Holiday {
         this.types = types;
         this.country = country;
     }
+
+    /**
+     * 테스트용 빌더 생성자
+     */
+    @Builder(builderMethodName = "testObjWithId")
+    public Holiday(Long id, String date, String localName, String name, boolean fixed, boolean global,
+        List<String> counties, String launchYear, List<String> types, Country country) {
+        this.id = id;
+        this.date = LocalDate.parse(date);
+        this.localName = localName;
+        this.name = name;
+        this.fixed = fixed;
+        this.global = global;
+        this.counties = counties;
+        this.launchYear = launchYear != null ? Integer.parseInt(launchYear) : null;
+        this.types = types;
+        this.country = country;
+    }
 }

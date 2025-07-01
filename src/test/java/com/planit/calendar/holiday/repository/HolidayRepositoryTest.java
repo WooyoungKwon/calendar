@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.repository.CountryRepository;
 import com.planit.calendar.holiday.domain.Holiday;
-import com.planit.calendar.holiday.dto.HolidayDto;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,8 @@ class HolidayRepositoryTest {
         assertEquals(savedHoliday.getId(), findHoliday.getId());
         assertEquals(holiday.getName(), findHoliday.getName());
         assertEquals(holiday.getDate(), findHoliday.getDate());
-
     }
+
+    // TODO: 중복값 테스트 추가
 
 }
