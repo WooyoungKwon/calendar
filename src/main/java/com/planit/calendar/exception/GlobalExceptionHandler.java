@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponseDto> handleIllegalArgumentException(IllegalArgumentException exception, HttpServletRequest request) {
         log.warn("잘못된 인자 예외 발생. 요청 URI: {}, 예외 메시지: {}", request.getRequestURI(), exception.getMessage());
         ResponseCode responseCode = ResponseCode.BAD_REQUEST;
-        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request);
+        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request, exception.getMessage());
         return ResponseEntity.status(responseCode.getStatus()).body(exceptionResponseDto);
     }
 
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponseDto> handleIllegalStateException(IllegalStateException exception, HttpServletRequest request) {
         log.warn("서버의 상태에 어긋나는 파라미터로 요청. 요청 URI: {}, 예외 메시지: {}", request.getRequestURI(), exception.getMessage());
         ResponseCode responseCode = ResponseCode.BAD_REQUEST;
-        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request);
+        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request, exception.getMessage());
         return ResponseEntity.status(responseCode.getStatus()).body(exceptionResponseDto);
     }
 
@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponseDto> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exception, HttpServletRequest request) {
         log.warn("요청 파라미터 형식 오류. 요청 URI: {}, 예외 메시지: {}", request.getRequestURI(), exception.getMessage());
         ResponseCode responseCode = ResponseCode.INVALID_PARAMETER;
-        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request);
+        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request, exception.getMessage());
         return ResponseEntity.badRequest().body(exceptionResponseDto);
     }
 

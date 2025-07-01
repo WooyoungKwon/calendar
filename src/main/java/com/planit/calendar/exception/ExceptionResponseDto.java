@@ -20,4 +20,11 @@ public class ExceptionResponseDto {
         this.errorMessage = responseCode.getMessage();
         this.path = request.getRequestURI();
     }
+
+    public ExceptionResponseDto(ResponseCode responseCode, HttpServletRequest request, String customMessage) {
+        this.status = HttpStatus.valueOf(responseCode.getStatus());
+        this.code = responseCode.getCode();
+        this.errorMessage = responseCode.getMessage() + " " + customMessage;
+        this.path = request.getRequestURI();
+    }
 }

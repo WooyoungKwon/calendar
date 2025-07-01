@@ -2,6 +2,7 @@ package com.planit.calendar.holiday.service;
 
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.repository.CountryRepository;
+import com.planit.calendar.exception.custom.NotFoundException;
 import com.planit.calendar.holiday.dto.HolidayDto;
 import com.planit.calendar.holiday.domain.Holiday;
 import com.planit.calendar.holiday.dto.HolidayInfoDto;
@@ -29,6 +30,7 @@ public class HolidayService {
 
     private final WebClient webClient;
     private final HolidayRepository holidayRepository;
+    private final CountryRepository countryRepository;
 
     public Mono<List<HolidayDto>> fetchHolidays(String year, String countryCode) {
         return webClient.get()
@@ -66,6 +68,14 @@ public class HolidayService {
     public HolidaySearchResponse getHolidaysByConditions(Pageable pageable,
         HolidaySearchRequest holidaySearchRequest) {
 
+        Country country = countryRepository.findById(holidaySearchRequest.getCountryId())
+            .orElseThrow(() -> new NotFoundException("해당 국가를 찾을 수 없습니다."));
+
+        int year = holidaySearchRequest.getBeforeYear().getYear();
+        if (year < 2020 || year > 2025) {
+            throw new IllegalArgumentException("2020년부터 2025년 사이의 연도만 조회할 수 있습니다.");
+        }
+
         // 나라와 연도 시작, 연도 끝 사이에 있는 공휴일 데이터를 페이징하여 조회
         Page<Holiday> holidayByCountryAndDateList = holidayRepository.findByCountry_IdAndDateBetween(
             holidaySearchRequest.getCountryId(),
@@ -77,7 +87,7 @@ public class HolidayService {
             holidayByCountryAndDateList.getContent());
 
         // 페이징된 결과를 응답 객체로 변환하여 반환
-        return HolidaySearchResponse.of(holidayByCountryAndDateList.getTotalElements(),
+        return HolidaySearchResponse.of(country.getName(), holidayByCountryAndDateList.getTotalElements(),
             holidayByCountryAndDateList.getTotalPages(), holidayInfoDtoList);
     }
 }
