@@ -1,17 +1,17 @@
 package com.planit.calendar.holiday.repository;
 
-import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.holiday.domain.Holiday;
 import com.planit.calendar.holiday.dto.response.HolidayInfoWithCountry;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface HolidayRepository extends JpaRepository<Holiday, Long> {
     Page<Holiday> findByCountry_IdAndDateBetween(Long countryId, LocalDate dateAfter, LocalDate dateBefore, Pageable pageable);
 

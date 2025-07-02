@@ -1,6 +1,9 @@
 package com.planit.calendar.country.controller;
 
 import com.planit.calendar.country.dto.ChangedDataCount;
+import com.planit.calendar.country.dto.CountryInfoDto;
+import com.planit.calendar.country.dto.CountryListDto;
+import com.planit.calendar.country.dto.CountryPageableDto;
 import com.planit.calendar.holiday.dto.request.HolidayPageableDto;
 import com.planit.calendar.holiday.dto.request.HolidaySearchByCountryRequest;
 import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
@@ -9,6 +12,7 @@ import com.planit.calendar.response.ResponseCode;
 import com.planit.calendar.response.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class CountryController {
 
     private final HolidayService holidayService;
+
+    @GetMapping("/list")
+    @Operation(summary = "국가 목록 조회", description = "저장된 국가 목록을 조회합니다.")
+    public ResponseEntity<ResponseDto<CountryListDto>> getCountryList(
+        @ModelAttribute @Valid CountryPageableDto countryPageableDto
+    ) {
+        CountryListDto countryListDto = holidayService.getAllCountries(countryPageableDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ResponseDto.success(ResponseCode.COUNTRY_LIST_SUCCESS, countryListDto));
+    }
 
     @GetMapping("/country")
     @Operation(summary = "국가별 공휴일 조회", description = "파라미터로 받은 국가의 공휴일 데이터를 페이징하여 조회합니다.")

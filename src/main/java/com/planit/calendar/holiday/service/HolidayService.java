@@ -1,9 +1,12 @@
 package com.planit.calendar.holiday.service;
 
+import com.planit.calendar.common.PageableDto;
 import com.planit.calendar.common.YearRange;
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.dto.ChangeType;
 import com.planit.calendar.country.dto.ChangedDataCount;
+import com.planit.calendar.country.dto.CountryInfoDto;
+import com.planit.calendar.country.dto.CountryListDto;
 import com.planit.calendar.country.repository.CountryRepository;
 import com.planit.calendar.exception.custom.NotFoundException;
 import com.planit.calendar.holiday.dto.HolidayDto;
@@ -28,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +76,28 @@ public class HolidayService {
             .doOnNext(holidayDtoList -> log.info("국가코드: {}, {}개의 공휴일 데이터를 조회합니다.", countryCode,
                 holidayDtoList.size()))
             .block();
+    }
+
+    /**
+     * 저장된 국가 목록 조회
+     */
+    public CountryListDto getAllCountries(PageableDto pageableDto) {
+        Pageable pageable = PageRequest.of(pageableDto.getPage(), pageableDto.getSize());
+        Page<Country> countryList = countryRepository.findAll(pageable);
+        List<CountryInfoDto> countryInfoDtoList = countryList
+            .stream().map(
+                country -> CountryInfoDto.builder()
+                    .countryId(country.getId())
+                    .name(country.getName())
+                    .countryCode(country.getCountryCode())
+                    .build()
+            ).toList();
+        return CountryListDto.builder()
+            .currentCount(countryList.getSize())
+            .totalCount(countryList.getTotalElements())
+            .totalPageCount(countryList.getTotalPages())
+            .countryList(countryInfoDtoList)
+            .build();
     }
 
     @Transactional
