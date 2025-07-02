@@ -1,5 +1,6 @@
 package com.planit.calendar.holiday.dto.request;
 
+import com.planit.calendar.common.YearRange;
 import jakarta.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -23,12 +24,12 @@ public class HolidaySearchRequest {
 
     @AssertTrue(message = "시작 날짜의 연도는 2020년부터 2025년 사이여야 합니다.")
     private boolean isBeforeYearInValidRange() {
-        return beforeYear != null && beforeYear.getYear() >= 2020 && beforeYear.getYear() <= 2025;
+        return beforeYear != null && beforeYear.getYear() >= YearRange.START_YEAR.getYear() && beforeYear.getYear() <= YearRange.END_YEAR.getYear();
     }
 
     @AssertTrue(message = "종료 날짜의 연도는 2020년부터 2025년 사이여야 합니다.")
     private boolean isAfterYearInValidRange() {
         // afterYear가 null이 아닐 때만 검증
-        return afterYear != null && afterYear.getYear() >= 2020 && afterYear.getYear() <= 2025;
+        return afterYear != null && afterYear.getYear() >= YearRange.START_YEAR.getYear() && afterYear.getYear() <= YearRange.END_YEAR.getYear();
     }
 }

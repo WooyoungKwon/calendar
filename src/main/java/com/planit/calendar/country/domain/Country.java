@@ -1,9 +1,15 @@
 package com.planit.calendar.country.domain;
 
+import com.planit.calendar.holiday.domain.Holiday;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +30,9 @@ public class Country {
     @Column(name = "country_code", nullable = false, unique = true)
     private String countryCode;
 
+    @OneToMany(mappedBy = "country", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Holiday> holidays = new ArrayList<>();
+
     @Builder
     public Country(String name, String countryCode) {
         if (countryCode == null || countryCode.length() != 2) {
@@ -39,7 +48,7 @@ public class Country {
     /**
      * 테스트용 빌더 생성자
      */
-    @Builder(builderMethodName = "withId", access = AccessLevel.PRIVATE)
+    @Builder(builderMethodName = "withId", access = AccessLevel.PUBLIC)
     private Country(Long id, String name, String countryCode) {
         this.id = id;
         this.name = name;

@@ -1,5 +1,6 @@
 package com.planit.calendar.initalizer;
 
+import com.planit.calendar.common.YearRange;
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.dto.CountryDto;
 import com.planit.calendar.country.repository.CountryRepository;
@@ -56,7 +57,7 @@ public class DataInitializer {
             return;
         }
         // 외부 API에서 공휴일 데이터를 조회
-        List<String> yearList = List.of("2020", "2021", "2022", "2023", "2024", "2025");
+        List<String> yearList = YearRange.getYearRange();
         List<Country> countryList = countryRepository.findAll();
 
         Flux.fromIterable(yearList)

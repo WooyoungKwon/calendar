@@ -71,6 +71,17 @@ public class Holiday {
         this.country = country;
     }
 
+    public void update(Holiday holiday) {
+        this.date = holiday.getDate();
+        this.localName = holiday.getLocalName();
+        this.name = holiday.getName();
+        this.fixed = holiday.isFixed();
+        this.global = holiday.isGlobal();
+        this.counties = holiday.getCounties();
+        this.launchYear = holiday.getLaunchYear();
+        this.types = holiday.getTypes();
+    }
+
     /**
      * 테스트용 빌더 생성자
      */
