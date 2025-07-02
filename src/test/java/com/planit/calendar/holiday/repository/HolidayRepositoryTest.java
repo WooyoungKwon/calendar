@@ -48,7 +48,4 @@ class HolidayRepositoryTest {
         assertEquals(holiday.getName(), findHoliday.getName());
         assertEquals(holiday.getDate(), findHoliday.getDate());
     }
-
-    // TODO: 중복값 테스트 추가
-
 }
