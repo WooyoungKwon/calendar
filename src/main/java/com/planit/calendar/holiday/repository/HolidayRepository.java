@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface HolidayRepository extends JpaRepository<Holiday, Long> {
@@ -50,7 +51,25 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
         """)
     List<Holiday> findAllByCountryAndDate(Long countryId, String year);
 
-    List<Holiday> findAllByCountry_CountryCode(String countryCountryCode);
+    @Query("""
+        SELECT h
+        FROM Holiday h
+        WHERE h.country.id = :countryId
+        AND YEAR(h.date) = :year
+        """)
+    List<Holiday> findByCountryAndYear(Long countryId, String year);
 
-    boolean existsHolidayByNameAndLocalNameAndDate(String name, String localName, LocalDate date);
+    void deleteByCountry_Id(Long countryId);
+
+    @Modifying
+    @Query("DELETE FROM Holiday h WHERE YEAR(h.date) = :year")
+    void deleteByDate(String year);
+
+    @Modifying
+    @Query("""
+        DELETE FROM Holiday h
+        WHERE YEAR(h.date) = :year
+        AND h.country.id = :countryId
+        """)
+    void deleteByCountryAndYear(Long countryId, String year);
 }

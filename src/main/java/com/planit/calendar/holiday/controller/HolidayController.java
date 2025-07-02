@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,25 +52,15 @@ public class HolidayController {
             .body(ResponseDto.success(ResponseCode.HOLIDAY_SEARCH_SUCCESS, holidaysByConditions));
     }
 
-    @GetMapping("/country")
-    @Operation(summary = "국가별 공휴일 조회", description = "파라미터로 받은 국가의 공휴일 데이터를 페이징하여 조회합니다.")
-    public ResponseEntity<ResponseDto<HolidaySearchResponse>> getHolidaysByCountry(
-        @ModelAttribute @Valid HolidaySearchByCountryRequest request,
-        @ModelAttribute @Valid HolidayPageableDto holidayPageableDto
+    @PostMapping("/synchronize")
+    @Operation(summary = "공휴일 데이터 동기화", description = "국가와 연도를 기준으로 외부 API에서 공휴일 데이터를 조회하고, 기존에 저장 돼 있던 공휴일 데이터에 덮어씌웁니다.")
+    public ResponseEntity<ResponseDto<ChangedDataCount>> synchronizeHolidays(
+        @RequestParam(required = false) Long countryId,
+        @RequestParam(required = false) String year
     ) {
-        HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByCountry(holidayPageableDto, request);
+        ChangedDataCount changedDataCount = holidayService.synchronizeByCountryAndYear(countryId, year);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ResponseDto.success(ResponseCode.HOLIDAY_SEARCH_SUCCESS, holidaysByConditions));
-    }
-
-    @PostMapping("/synchronize/country")
-    @Operation(summary = "국가별 공휴일 데이터 동기화", description = "국가 ID를 기준으로 외부 API에서 공휴일 데이터를 조회하고, 기존에 저장 돼 있던 해당 국가 데이터에 덮어씌웁니다.")
-    public ResponseEntity<ResponseDto<ChangedDataCount>> synchronizeCountry(
-        @RequestParam Long countryId
-    ) {
-        ChangedDataCount changedDataCount = holidayService.synchronizeByCountry(countryId);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(ResponseDto.success(ResponseCode.COUNTRY_HOLIDAY_SYNCHRONIZE_SUCCESS, changedDataCount));
+            .body(ResponseDto.success(ResponseCode.HOLIDAY_SYNCHRONIZE_SUCCESS, changedDataCount));
     }
 
     @PostMapping("/synchronize/year")
@@ -79,6 +70,17 @@ public class HolidayController {
     ) {
         ChangedDataCount changedDataCount = holidayService.synchronizeByYear(year);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(ResponseDto.success(ResponseCode.COUNTRY_HOLIDAY_SYNCHRONIZE_SUCCESS, changedDataCount));
+            .body(ResponseDto.success(ResponseCode.HOLIDAY_SYNCHRONIZE_SUCCESS, changedDataCount));
     }
+
+    @DeleteMapping("/year")
+    @Operation(summary = "해당 연도 공휴일 데이터 삭제", description = "국가별 연도별 공휴일 데이터를 전부 삭제합니다.")
+    public ResponseEntity<ResponseDto<?>> deleteAllCountryYearHolidays(
+        @RequestParam String year
+    ) {
+        holidayService.deleteAllByYear(year);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.success(ResponseCode.HOLIDAY_DELETE_SUCCESS, null));
+    }
+
 }

@@ -17,7 +17,6 @@ import com.planit.calendar.holiday.dto.request.HolidaySearchRequest;
 import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
 import com.planit.calendar.holiday.repository.HolidayRepository;
 import com.planit.calendar.response.ResponseCode;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -167,6 +166,32 @@ public class HolidayService {
     }
 
     /**
+     * 외부 API를 통해 국가와 연도별 공휴일 데이터 재동기화
+     */
+    @Transactional
+    public ChangedDataCount synchronizeByCountryAndYear(Long countryId, String year) {
+        Country country = countryRepository.findById(countryId)
+            .orElseThrow(
+                () -> new IllegalArgumentException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
+
+        log.info("국가: {}, 연도: {}년 공휴일 데이터 재동기화 시작", country.getName(), year);
+
+        // 변경 데이터 개수를 저장할 객체 생성
+        ChangedDataCount changedDataCount = new ChangedDataCount();
+
+        // 현재 DB에 저장되어 있는 해당 국가의 연도별 공휴일 목록 조회
+        List<Holiday> holidayList = holidayRepository.findByCountryAndYear(countryId, year);
+        // 재동기화
+        synchronizeHolidayData(holidayList, country.getCountryCode(), year, changedDataCount);
+
+        log.info("국가: {}, 연도: {}, 총 추가 데이터 개수: {}, 수정 데이터 개수: {}, 삭제 데이터 개수: {}",
+            country.getName(), year, changedDataCount.getTotalAddCount(),
+            changedDataCount.getTotalUpdateCount(), changedDataCount.getTotalDeleteCount());
+
+        return changedDataCount;
+    }
+
+    /**
      * 외부 API를 통해 국가별 공휴일 데이터 재동기화
      */
     @Transactional
@@ -197,6 +222,7 @@ public class HolidayService {
     /**
      * 외부 API를 통해 연도별 공휴일 데이터 재동기화
      */
+    @Transactional
     public ChangedDataCount synchronizeByYear(String year) {
         log.info("연도별 공휴일 데이터 재동기화 시작: {}년", year);
 
@@ -271,5 +297,38 @@ public class HolidayService {
                     holiday.getName(), holiday.getTypes()),
                 Function.identity()
             ));
+    }
+
+    @Transactional
+    public void deleteAllByCountry(Long countryId) {
+        Country country = countryRepository.findById(countryId)
+            .orElseThrow(() -> new NotFoundException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
+
+        log.info("{} 국가의 모든 공휴일 데이터를 삭제합니다.", country.getName());
+
+        holidayRepository.deleteByCountry_Id(countryId);
+
+        log.info("{} 국가의 모든 공휴일 데이터 삭제 완료", country.getName());
+    }
+
+    @Transactional
+    public void deleteAllByYear(String year) {
+        log.info("{}년의 모든 공휴일 데이터를 삭제합니다.", year);
+
+        holidayRepository.deleteByDate(year);
+
+        log.info("{}년의 모든 공휴일 데이터 삭제 완료", year);
+    }
+
+    @Transactional
+    public void deleteAllByCountryAndYear(Long countryId, String year) {
+        Country country = countryRepository.findById(countryId)
+            .orElseThrow(() -> new NotFoundException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
+
+        log.info("{} 국가의 {}년 공휴일 데이터를 삭제합니다.", country.getName(), year);
+
+        holidayRepository.deleteByCountryAndYear(countryId, year);
+
+        log.info("{} 국가의 {}년 공휴일 데이터 삭제 완료", country.getName(), year);
     }
 }

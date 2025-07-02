@@ -11,12 +11,14 @@ public enum ResponseCode {
 
     // 국가 관련 코드
     COUNTRY_NOT_FOUND(404, "4011", "해당 국가를 찾을 수 없습니다."),
-    COUNTRY_HOLIDAY_SYNCHRONIZE_SUCCESS(200, "2012", "해당 국가의 공휴일 데이터 동기화 성공"),
+
 
     // 공휴일 관련 코드
     HOLIDAY_SEARCH_SUCCESS(200, "2010", "공휴일 조회 성공"),
     HOLIDAY_NOT_FOUND(404, "4010", "해당 조건에 맞는 공휴일을 찾을 수 없습니다."),
     HOLIDAY_SAVE_SUCCESS(200, "2011", "공휴일 저장 성공"),
+    HOLIDAY_SYNCHRONIZE_SUCCESS(200, "2012", "공휴일 데이터 동기화 성공"),
+    HOLIDAY_DELETE_SUCCESS(200, "2015", "공휴일 데이터가 삭제되었습니다."),
 
     // 유효성 검사 관련 코드
     INVALID_PARAMETER(400, "4001", "요청 파라미터가 유효하지 않습니다."),
