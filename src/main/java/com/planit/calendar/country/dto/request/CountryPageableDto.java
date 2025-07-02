@@ -1,4 +1,4 @@
-package com.planit.calendar.country.dto;
+package com.planit.calendar.country.dto.request;
 
 import com.planit.calendar.common.PageableDto;
 import org.springframework.data.domain.PageRequest;

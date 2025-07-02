@@ -1,4 +1,4 @@
-package com.planit.calendar.country.dto;
+package com.planit.calendar.country.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

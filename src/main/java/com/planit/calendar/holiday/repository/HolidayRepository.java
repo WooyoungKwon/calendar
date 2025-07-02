@@ -39,7 +39,7 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
         WHERE YEAR(h.date) = :year
         AND h.country.countryCode = :countryCode
         """)
-    List<Holiday> findByYearAndCountryCode(String year, String countryCode);
+    List<Holiday> findByYearAndCountryCode(int year, String countryCode);
 
     Page<Holiday> findByCountry_Id(Long countryId, Pageable pageable);
 
@@ -49,7 +49,7 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
         WHERE h.country.id = :countryId
         AND YEAR(h.date) = :year
         """)
-    List<Holiday> findAllByCountryAndDate(Long countryId, String year);
+    List<Holiday> findAllByCountryAndDate(Long countryId, int year);
 
     @Query("""
         SELECT h
@@ -57,13 +57,13 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
         WHERE h.country.id = :countryId
         AND YEAR(h.date) = :year
         """)
-    List<Holiday> findByCountryAndYear(Long countryId, String year);
+    List<Holiday> findByCountryAndYear(Long countryId, int year);
 
     void deleteByCountry_Id(Long countryId);
 
     @Modifying
     @Query("DELETE FROM Holiday h WHERE YEAR(h.date) = :year")
-    void deleteByDate(String year);
+    void deleteByDate(int year);
 
     @Modifying
     @Query("""

@@ -33,8 +33,8 @@ public class AutoSyncScheduler {
                 .addString("runTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
                 .toJobParameters();
 
-            jobLauncher.run(holidaySyncJob, jobParameters);
             log.info( "전년도 {}년과 금년도 {}년의 데이터 동기화 작업 시작", previousYear, currentYear);
+            jobLauncher.run(holidaySyncJob, jobParameters);
         } catch (Exception e) {
             log.info("데이터 동기화 작업 시작 중 오류: {}", e.getMessage());
         }

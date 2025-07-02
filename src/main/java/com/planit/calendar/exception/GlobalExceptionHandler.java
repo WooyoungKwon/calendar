@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
         log.warn("요청 파라미터 형식 오류. 요청 URI: {}, 예외 메시지: {}", request.getRequestURI(), exception.getMessage());
         ResponseCode responseCode = ResponseCode.INVALID_PARAMETER;
         ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request, exception.getMessage());
-        return ResponseEntity.badRequest().body(exceptionResponseDto);
+        return ResponseEntity.status(responseCode.getStatus()).body(exceptionResponseDto);
     }
 
     /**
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
         log.warn("요청 파라미터 유효성 검사 실패. 요청 URI: {}, 예외 메시지: {}", request.getRequestURI(), exception.getMessage());
         ResponseCode responseCode = ResponseCode.INVALID_PARAMETER;
         ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto(responseCode, request, exception.getMessage());
-        return ResponseEntity.badRequest().body(exceptionResponseDto);
+        return ResponseEntity.status(responseCode.getStatus()).body(exceptionResponseDto);
     }
 
 }

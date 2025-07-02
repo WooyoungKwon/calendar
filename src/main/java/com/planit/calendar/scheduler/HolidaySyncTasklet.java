@@ -30,8 +30,8 @@ public class HolidaySyncTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("{}년과 {}년의 공휴일을 동기화하기 위한 Tasklet 시작", previousYear, currentYear);
 
-        holidayService.synchronizeByYear(previousYear);
-        holidayService.synchronizeByYear(currentYear);
+        holidayService.synchronizeByYear(Integer.parseInt(previousYear));
+        holidayService.synchronizeByYear(Integer.parseInt(currentYear));
 
         return RepeatStatus.FINISHED;
     }

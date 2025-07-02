@@ -3,10 +3,10 @@ package com.planit.calendar.holiday.service;
 import com.planit.calendar.common.PageableDto;
 import com.planit.calendar.common.YearRange;
 import com.planit.calendar.country.domain.Country;
-import com.planit.calendar.country.dto.ChangeType;
-import com.planit.calendar.country.dto.ChangedDataCount;
-import com.planit.calendar.country.dto.CountryInfoDto;
-import com.planit.calendar.country.dto.CountryListDto;
+import com.planit.calendar.country.dto.response.ChangeType;
+import com.planit.calendar.country.dto.response.ChangedDataCount;
+import com.planit.calendar.country.dto.response.CountryInfoDto;
+import com.planit.calendar.country.dto.response.CountryListDto;
 import com.planit.calendar.country.repository.CountryRepository;
 import com.planit.calendar.exception.custom.NotFoundException;
 import com.planit.calendar.holiday.dto.HolidayDto;
@@ -15,7 +15,7 @@ import com.planit.calendar.holiday.dto.HolidayInfoDto;
 import com.planit.calendar.holiday.dto.response.HolidayInfoWithCountry;
 import com.planit.calendar.holiday.dto.request.HolidayPageableDto;
 import com.planit.calendar.holiday.dto.request.HolidaySearchByCountryRequest;
-import com.planit.calendar.holiday.dto.request.HolidaySearchByYearRequest;
+import com.planit.calendar.holiday.dto.request.HolidayByYearRequest;
 import com.planit.calendar.holiday.dto.request.HolidaySearchRequest;
 import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
 import com.planit.calendar.holiday.repository.HolidayRepository;
@@ -52,7 +52,7 @@ public class HolidayService {
     /**
      * 연도와 국가 코드로 외부 API를 통해 공휴일 데이터 조회
      */
-    public Mono<List<HolidayDto>> fetchHolidays(String year, String countryCode) {
+    public Mono<List<HolidayDto>> fetchHolidays(int year, String countryCode) {
         return webClient.get()
             .uri("/api/v3/PublicHolidays/{year}/{countryCode}", year, countryCode)
             .retrieve()
@@ -65,7 +65,7 @@ public class HolidayService {
     /**
      * 외부 API를 국가와 연도 기준으로 공휴일 데이터 조회
      */
-    private List<HolidayDto> fetchHolidayByCountryYear(String countryCode, String year) {
+    private List<HolidayDto> fetchHolidayByCountryYear(String countryCode, int year) {
         log.info("국가코드: {} 연도: {}년 데이터 외부 API 요청합니다.", countryCode, year);
 
         return webClient.get()
@@ -93,7 +93,7 @@ public class HolidayService {
                     .build()
             ).toList();
         return CountryListDto.builder()
-            .currentCount(countryList.getSize())
+            .currentCount(countryList.getNumberOfElements())
             .totalCount(countryList.getTotalElements())
             .totalPageCount(countryList.getTotalPages())
             .countryList(countryInfoDtoList)
@@ -158,7 +158,7 @@ public class HolidayService {
      * 연도별 공휴일 데이터 조회
      */
     public HolidaySearchResponse getHolidaysByYear(HolidayPageableDto holidayPageableDto,
-        HolidaySearchByYearRequest request) {
+        HolidayByYearRequest request) {
         Pageable pageable = holidayPageableDto.toPageable();
 
         Page<HolidayInfoWithCountry> holidayInfoDtoList = holidayRepository.findByYear(
@@ -167,7 +167,7 @@ public class HolidayService {
         String condition = String.format("연도: %d년", request.getYear());
 
         return HolidaySearchResponse.of(condition, holidayInfoDtoList.getTotalElements(),
-            holidayInfoDtoList.getTotalPages(), holidayInfoDtoList.getSize(),
+            holidayInfoDtoList.getTotalPages(), holidayInfoDtoList.getNumberOfElements(),
             holidayInfoDtoList.getContent());
     }
 
@@ -195,7 +195,7 @@ public class HolidayService {
      * 외부 API를 통해 국가와 연도별 공휴일 데이터 재동기화
      */
     @Transactional
-    public ChangedDataCount synchronizeByCountryAndYear(Long countryId, String year) {
+    public ChangedDataCount synchronizeByCountryAndYear(Long countryId, int year) {
         Country country = countryRepository.findById(countryId)
             .orElseThrow(
                 () -> new IllegalArgumentException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
@@ -232,7 +232,7 @@ public class HolidayService {
         // 변경 데이터 개수를 저장할 객체 생성
         ChangedDataCount changedDataCount = new ChangedDataCount();
 
-        for (String year : YearRange.getYearRange()) {
+        for (int year : YearRange.getYearRange()) {
             // 현재 DB에 저장되어 있는 국가와 연도별 공휴일 목록 조회
             List<Holiday> holidayList = holidayRepository.findAllByCountryAndDate(countryId, year);
             // 재동기화
@@ -249,7 +249,7 @@ public class HolidayService {
      * 외부 API를 통해 연도별 공휴일 데이터 재동기화
      */
     @Transactional
-    public ChangedDataCount synchronizeByYear(String year) {
+    public ChangedDataCount synchronizeByYear(int year) {
         log.info("연도별 공휴일 데이터 재동기화 시작: {}년", year);
 
         // 변경 데이터 개수를 저장할 객체 생성
@@ -273,7 +273,7 @@ public class HolidayService {
     /**
      * 국가별 공휴일 데이터를 외부 API를 통해 덮어씌우기
      */
-    private void synchronizeHolidayData(List<Holiday> holidayList, String countryCode, String year,
+    private void synchronizeHolidayData(List<Holiday> holidayList, String countryCode, int year,
         ChangedDataCount changedDataCount) {
         // 날짜를 키로 하는 공휴일 Map 생성
         Map<String, Holiday> holidayMap = listCovertMap(holidayList);
@@ -338,7 +338,7 @@ public class HolidayService {
     }
 
     @Transactional
-    public void deleteAllByYear(String year) {
+    public void deleteAllByYear(int year) {
         log.info("{}년의 모든 공휴일 데이터를 삭제합니다.", year);
 
         holidayRepository.deleteByDate(year);

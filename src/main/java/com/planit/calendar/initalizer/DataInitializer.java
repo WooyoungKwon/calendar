@@ -57,13 +57,13 @@ public class DataInitializer {
             return;
         }
         // 외부 API에서 공휴일 데이터를 조회
-        List<String> yearList = YearRange.getYearRange();
+        List<Integer> yearList = YearRange.getYearRange();
         List<Country> countryList = countryRepository.findAll();
 
         saveHolidayWithWebclient(yearList, countryList);
     }
 
-    private void saveHolidayWithWebclient(List<String> yearList, List<Country> countryList) {
+    private void saveHolidayWithWebclient(List<Integer> yearList, List<Country> countryList) {
         Flux.fromIterable(yearList)
             .flatMap(year -> Flux.fromIterable(countryList)
                 .flatMap(country -> {

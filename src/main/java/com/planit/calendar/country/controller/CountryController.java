@@ -1,9 +1,8 @@
 package com.planit.calendar.country.controller;
 
-import com.planit.calendar.country.dto.ChangedDataCount;
-import com.planit.calendar.country.dto.CountryInfoDto;
-import com.planit.calendar.country.dto.CountryListDto;
-import com.planit.calendar.country.dto.CountryPageableDto;
+import com.planit.calendar.country.dto.response.ChangedDataCount;
+import com.planit.calendar.country.dto.response.CountryListDto;
+import com.planit.calendar.country.dto.request.CountryPageableDto;
 import com.planit.calendar.holiday.dto.request.HolidayPageableDto;
 import com.planit.calendar.holiday.dto.request.HolidaySearchByCountryRequest;
 import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
@@ -12,7 +11,6 @@ import com.planit.calendar.response.ResponseCode;
 import com.planit.calendar.response.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +51,7 @@ public class CountryController {
             .body(ResponseDto.success(ResponseCode.HOLIDAY_SEARCH_SUCCESS, holidaysByConditions));
     }
 
-    @DeleteMapping("holidayAndYear")
+    @DeleteMapping("/holidayAndYear")
     @Operation(summary = "해당 국가의 해당 연도 공휴일 데이터 삭제", description = "해당 국가의 해당 연도 데이터를 전부 삭제합니다.")
     public ResponseEntity<ResponseDto<?>> deleteAllCountryHolidaysAndYearHolidays(
         @RequestParam Long countryId,

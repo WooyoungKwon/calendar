@@ -17,10 +17,10 @@ public enum YearRange {
         return year;
     }
 
-    public static List<String> getYearRange() {
-        List<String> yearRange = new ArrayList<>();
+    public static List<Integer> getYearRange() {
+        List<Integer> yearRange = new ArrayList<>();
         for (int i = START_YEAR.year; i <= END_YEAR.year; i++) {
-            yearRange.add(String.valueOf(i));
+            yearRange.add(i);
         }
         return yearRange;
     }
