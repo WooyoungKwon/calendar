@@ -11,6 +11,7 @@ public enum ResponseCode {
 
     // 국가 관련 코드
     COUNTRY_NOT_FOUND(404, "4011", "해당 국가를 찾을 수 없습니다."),
+    COUNTRY_HOLIDAY_SYNCHRONIZE_SUCCESS(200, "2012", "해당 국가의 공휴일 데이터 동기화 성공"),
 
     // 공휴일 관련 코드
     HOLIDAY_SEARCH_SUCCESS(200, "2010", "공휴일 조회 성공"),

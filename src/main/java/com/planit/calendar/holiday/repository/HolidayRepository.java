@@ -32,6 +32,14 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
         """)
     Page<HolidayInfoWithCountry> findByYear(int year, Pageable pageable);
 
+    @Query("""
+        SELECT h
+        FROM Holiday h
+        WHERE YEAR(h.date) = :year
+        AND h.country.countryCode = :countryCode
+        """)
+    List<Holiday> findByYearAndCountryCode(String year, String countryCode);
+
     Page<Holiday> findByCountry_Id(Long countryId, Pageable pageable);
 
     @Query("""
@@ -41,4 +49,8 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
         AND YEAR(h.date) = :year
         """)
     List<Holiday> findAllByCountryAndDate(Long countryId, String year);
+
+    List<Holiday> findAllByCountry_CountryCode(String countryCountryCode);
+
+    boolean existsHolidayByNameAndLocalNameAndDate(String name, String localName, LocalDate date);
 }

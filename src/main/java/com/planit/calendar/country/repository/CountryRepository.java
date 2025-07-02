@@ -1,7 +1,12 @@
 package com.planit.calendar.country.repository;
 
 import com.planit.calendar.country.domain.Country;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface CountryRepository extends JpaRepository<Country, Long> {
+
+    @Query("SELECT c.countryCode FROM Country c")
+    List<String> getAllCountryCode();
 }

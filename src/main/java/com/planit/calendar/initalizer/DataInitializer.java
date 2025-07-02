@@ -44,7 +44,7 @@ public class DataInitializer {
         Mono<List<CountryDto>> fetchCountryMonoList = countryService.fetchCountries();
         // 조회된 국가 데이터를 DB에 저장
         fetchCountryMonoList.flatMap(countryService::saveCountries)
-            .doOnSuccess(countryList -> log.info("{}개 국가 데이터를 DB에 저장했습니다.", countryList.size()))
+            .doOnSuccess(countryList -> log.info("{}개 국가 데이터를 DB에 저장합니다.", countryList.size()))
             .doOnError(error -> log.error("국가 데이터를 DB에 저장하는 과정에서 오류가 발생: {}", error.getMessage()))
             .block();
     }

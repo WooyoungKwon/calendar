@@ -1,7 +1,12 @@
 package com.planit.calendar.country.controller;
 
+import com.planit.calendar.country.dto.ChangedDataCount;
 import com.planit.calendar.country.service.CountryService;
+import com.planit.calendar.response.ResponseCode;
+import com.planit.calendar.response.ResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +20,5 @@ public class CountryController {
 
     private final CountryService countryService;
 
-    @PostMapping("/synchronize")
-    public ResponseEntity<?> synchronizeCountry(
-        @RequestParam(required = false) Long countryId
-    ) {
-        countryService.synchronizeCountry(countryId);
 
-        return ResponseEntity.ok().build();
-    }
 }
