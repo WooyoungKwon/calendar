@@ -2,7 +2,10 @@ package com.planit.calendar.country.service;
 
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.country.dto.CountryDto;
+import com.planit.calendar.country.dto.response.CountryInfoDto;
 import com.planit.calendar.country.repository.CountryRepository;
+import com.planit.calendar.exception.custom.NotFoundException;
+import com.planit.calendar.response.ResponseCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,5 +52,17 @@ public class CountryService {
         // Mono 객체를 별도 스레드에서 실행하며 DB에 벌크 저장
         return Mono.fromCallable(() -> countryRepository.saveAll(countryList))
             .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    public CountryInfoDto getCountryByCode(String countryCode) {
+        log.info("국가 코드 '{}'에 해당하는 국가 정보를 조회합니다.", countryCode);
+        Country country = countryRepository.findByCountryCode((countryCode))
+            .orElseThrow(() -> new NotFoundException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
+
+        return CountryInfoDto.builder()
+            .countryId(country.getId())
+            .name(country.getName())
+            .countryCode(country.getCountryCode())
+            .build();
     }
 }

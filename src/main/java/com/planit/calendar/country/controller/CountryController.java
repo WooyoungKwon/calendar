@@ -1,8 +1,11 @@
 package com.planit.calendar.country.controller;
 
+import com.planit.calendar.country.dto.request.CountryByYearRequest;
 import com.planit.calendar.country.dto.response.ChangedDataCount;
+import com.planit.calendar.country.dto.response.CountryInfoDto;
 import com.planit.calendar.country.dto.response.CountryListDto;
 import com.planit.calendar.country.dto.request.CountryPageableDto;
+import com.planit.calendar.country.service.CountryService;
 import com.planit.calendar.holiday.dto.request.HolidayPageableDto;
 import com.planit.calendar.holiday.dto.request.HolidaySearchByCountryRequest;
 import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CountryController {
 
     private final HolidayService holidayService;
+    private final CountryService countryService;
 
     @GetMapping("/list")
     @Operation(summary = "국가 목록 조회", description = "저장된 국가 목록을 조회합니다.")
@@ -38,6 +42,15 @@ public class CountryController {
 
         return ResponseEntity.status(HttpStatus.OK)
             .body(ResponseDto.success(ResponseCode.COUNTRY_LIST_SUCCESS, countryListDto));
+    }
+
+    @GetMapping("/code")
+    @Operation(summary = "국가 정보 조회", description = "국가 코드로 국가 정보를 조회합니다.")
+    public ResponseEntity<ResponseDto<?>> getCountryByCode(
+        @RequestParam String countryCode
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ResponseDto.success(ResponseCode.COUNTRY_FIND_SUCCESS, countryService.getCountryByCode(countryCode.toUpperCase())));
     }
 
     @GetMapping("/country")
@@ -54,10 +67,9 @@ public class CountryController {
     @DeleteMapping("/holidayAndYear")
     @Operation(summary = "해당 국가의 해당 연도 공휴일 데이터 삭제", description = "해당 국가의 해당 연도 데이터를 전부 삭제합니다.")
     public ResponseEntity<ResponseDto<?>> deleteAllCountryHolidaysAndYearHolidays(
-        @RequestParam Long countryId,
-        @RequestParam String year
+        @ModelAttribute @Valid CountryByYearRequest request
     ) {
-        holidayService.deleteAllByCountryAndYear(countryId, year);
+        holidayService.deleteAllByCountryAndYear(request.getCountryId(), request.getYear());
 
         return ResponseEntity.status(HttpStatus.OK).body(ResponseDto.success(ResponseCode.HOLIDAY_DELETE_SUCCESS, null));
     }
