@@ -1,4 +1,4 @@
-package com.planit.calendar.holiday.dto;
+package com.planit.calendar.holiday.dto.request;
 
 import jakarta.validation.constraints.AssertTrue;
 import java.time.LocalDate;

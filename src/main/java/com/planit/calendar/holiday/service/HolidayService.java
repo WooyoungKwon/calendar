@@ -6,22 +6,20 @@ import com.planit.calendar.exception.custom.NotFoundException;
 import com.planit.calendar.holiday.dto.HolidayDto;
 import com.planit.calendar.holiday.domain.Holiday;
 import com.planit.calendar.holiday.dto.HolidayInfoDto;
-import com.planit.calendar.holiday.dto.HolidayInfoWithCountry;
-import com.planit.calendar.holiday.dto.HolidayPageableDto;
-import com.planit.calendar.holiday.dto.HolidaySearchByCountryRequest;
-import com.planit.calendar.holiday.dto.HolidaySearchRequest;
-import com.planit.calendar.holiday.dto.HolidaySearchResponse;
+import com.planit.calendar.holiday.dto.response.HolidayInfoWithCountry;
+import com.planit.calendar.holiday.dto.request.HolidayPageableDto;
+import com.planit.calendar.holiday.dto.request.HolidaySearchByCountryRequest;
+import com.planit.calendar.holiday.dto.request.HolidaySearchByYearRequest;
+import com.planit.calendar.holiday.dto.request.HolidaySearchRequest;
+import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
 import com.planit.calendar.holiday.repository.HolidayRepository;
 import com.planit.calendar.response.ResponseCode;
-import com.planit.calendar.response.ResponseDto;
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -75,7 +73,7 @@ public class HolidayService {
         HolidaySearchRequest holidaySearchRequest) {
 
         Country country = countryRepository.findById(holidaySearchRequest.getCountryId())
-            .orElseThrow(() -> new NotFoundException("해당 국가를 찾을 수 없습니다."));
+            .orElseThrow(() -> new NotFoundException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
 
         Pageable pageable = holidayPageableDto.toPageable();
 
@@ -100,7 +98,7 @@ public class HolidayService {
     }
 
     public HolidaySearchResponse getHolidaysByYear(HolidayPageableDto holidayPageableDto,
-        HolidaySearchByCountryRequest request) {
+        HolidaySearchByYearRequest request) {
         Pageable pageable = holidayPageableDto.toPageable();
 
         Page<HolidayInfoWithCountry> holidayInfoDtoList = holidayRepository.findByYear(
@@ -111,5 +109,21 @@ public class HolidayService {
         return HolidaySearchResponse.of(condition, holidayInfoDtoList.getTotalElements(),
             holidayInfoDtoList.getTotalPages(), holidayInfoDtoList.getSize(),
             holidayInfoDtoList.getContent());
+    }
+
+    public HolidaySearchResponse getHolidaysByCountry(HolidayPageableDto holidayPageableDto,
+        HolidaySearchByCountryRequest request) {
+
+        Country country = countryRepository.findById(request.getCountryId())
+            .orElseThrow(() -> new NotFoundException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
+
+        Pageable pageable = holidayPageableDto.toPageable();
+        Page<Holiday> holidayPage = holidayRepository.findByCountry_Id(request.getCountryId(), pageable);
+
+        List<HolidayInfoDto> holidayInfoDtoList = HolidayInfoDto.from(holidayPage.getContent());
+
+        return HolidaySearchResponse.of(country.getName(), holidayPage.getTotalElements(),
+            holidayPage.getTotalPages(), holidayInfoDtoList.size(),
+            holidayInfoDtoList);
     }
 }

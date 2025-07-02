@@ -7,17 +7,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.planit.calendar.country.domain.Country;
+import com.planit.calendar.country.repository.CountryRepository;
 import com.planit.calendar.holiday.domain.Holiday;
 import com.planit.calendar.holiday.dto.HolidayDto;
-import com.planit.calendar.holiday.dto.HolidayPageableDto;
-import com.planit.calendar.holiday.dto.HolidaySearchRequest;
-import com.planit.calendar.holiday.dto.HolidaySearchResponse;
+import com.planit.calendar.holiday.dto.request.HolidayPageableDto;
+import com.planit.calendar.holiday.dto.request.HolidaySearchRequest;
+import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
 import com.planit.calendar.holiday.repository.HolidayRepository;
-import com.planit.calendar.response.ResponseCode;
 import com.planit.calendar.textFixture.TestFixture;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +37,8 @@ class HolidayServiceTest {
 
     @Mock
     private HolidayRepository holidayRepository;
+    @Mock
+    private CountryRepository countryRepository;
 
     @InjectMocks
     private HolidayService holidayService;
@@ -73,13 +75,17 @@ class HolidayServiceTest {
     @DisplayName("나라와 날짜 조건에 맞는 공휴일을 페이징 조회하고, 조회된 공휴일 정보를 반환한다")
     public void 공휴일조회_나라_날짜_조건_페이징_조회() throws Exception {
         //given
+        Country country = Country.withId()
+            .id(1L)
+            .countryCode("KR")
+            .name("South Korea")
+            .build();
         int page = 0;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").ascending());
-        Long countryId = 1L;
         LocalDate beforeYear = LocalDate.of(2020, 1, 1);
         LocalDate afterYear = LocalDate.of(2020, 12, 31);
-        HolidaySearchRequest request = HolidaySearchRequest.of(countryId, beforeYear,
+        HolidaySearchRequest request = HolidaySearchRequest.of(country.getId(), beforeYear,
             afterYear);
 
         List<Holiday> mockHolidays = TestFixture.holidayListFixtureKR();
@@ -87,13 +93,14 @@ class HolidayServiceTest {
         //when
         PageImpl<Holiday> mockHolidayPage = new PageImpl<>(mockHolidays, pageable,
             mockHolidays.size());
+        when(countryRepository.findById(country.getId())).thenReturn(Optional.of(country));
         when(holidayRepository.findByCountry_IdAndDateBetween(
-            countryId, beforeYear, afterYear, pageable))
+            country.getId(), beforeYear, afterYear, pageable))
             .thenReturn(mockHolidayPage);
 
         //then
         HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByConditions(
-            new HolidayPageableDto(page, size, "date"), request);
+            new HolidayPageableDto(page, size), request);
 
         assertNotNull(holidaysByConditions);
     }

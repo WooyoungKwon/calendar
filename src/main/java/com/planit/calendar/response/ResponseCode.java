@@ -9,6 +9,9 @@ public enum ResponseCode {
     SUCCESS(200, "2000", "요청이 성공적으로 처리되었습니다."),
     CREATED(201, "2001", "리소스를 성공적으로 생성했습니다."),
 
+    // 국가 관련 코드
+    COUNTRY_NOT_FOUND(404, "4011", "해당 국가를 찾을 수 없습니다."),
+
     // 공휴일 관련 코드
     HOLIDAY_SEARCH_SUCCESS(200, "2010", "공휴일 조회 성공"),
     HOLIDAY_NOT_FOUND(404, "4010", "해당 조건에 맞는 공휴일을 찾을 수 없습니다."),

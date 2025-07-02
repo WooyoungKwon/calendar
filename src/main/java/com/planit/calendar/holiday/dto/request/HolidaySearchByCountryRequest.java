@@ -1,4 +1,4 @@
-package com.planit.calendar.holiday.dto;
+package com.planit.calendar.holiday.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class HolidaySearchByCountryRequest {
-    private int year;
+    private Long countryId;
 }

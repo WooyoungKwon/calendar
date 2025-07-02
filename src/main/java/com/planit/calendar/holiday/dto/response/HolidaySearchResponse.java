@@ -1,5 +1,6 @@
-package com.planit.calendar.holiday.dto;
+package com.planit.calendar.holiday.dto.response;
 
+import com.planit.calendar.holiday.dto.HolidayInfoDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

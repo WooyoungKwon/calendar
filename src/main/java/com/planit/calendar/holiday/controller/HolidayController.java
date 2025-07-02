@@ -1,25 +1,21 @@
 package com.planit.calendar.holiday.controller;
 
-import com.planit.calendar.holiday.dto.HolidayPageableDto;
-import com.planit.calendar.holiday.dto.HolidaySearchByCountryRequest;
-import com.planit.calendar.holiday.dto.HolidaySearchRequest;
-import com.planit.calendar.holiday.dto.HolidaySearchResponse;
+import com.planit.calendar.holiday.dto.request.HolidayPageableDto;
+import com.planit.calendar.holiday.dto.request.HolidaySearchByCountryRequest;
+import com.planit.calendar.holiday.dto.request.HolidaySearchByYearRequest;
+import com.planit.calendar.holiday.dto.request.HolidaySearchRequest;
+import com.planit.calendar.holiday.dto.response.HolidaySearchResponse;
 import com.planit.calendar.holiday.service.HolidayService;
 import com.planit.calendar.response.ResponseCode;
 import com.planit.calendar.response.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,11 +38,23 @@ public class HolidayController {
     }
 
     @GetMapping("/year")
+    @Operation(summary = "연도별 공휴일 조회", description = "파라미터로 받은 연도의 공휴일 데이터를 페이징하여 조회합니다.")
     public ResponseEntity<ResponseDto<HolidaySearchResponse>> getHolidaysByYear(
-        @ModelAttribute @Valid HolidaySearchByCountryRequest request,
+        @ModelAttribute @Valid HolidaySearchByYearRequest request,
         @ModelAttribute @Valid HolidayPageableDto holidayPageableDto
     ) {
         HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByYear(holidayPageableDto, request);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ResponseDto.success(ResponseCode.HOLIDAY_SEARCH_SUCCESS, holidaysByConditions));
+    }
+
+    @GetMapping("/country")
+    @Operation(summary = "국가별 공휴일 조회", description = "파라미터로 받은 국가의 공휴일 데이터를 페이징하여 조회합니다.")
+    public ResponseEntity<ResponseDto<HolidaySearchResponse>> getHolidaysByCountry(
+        @ModelAttribute @Valid HolidaySearchByCountryRequest request,
+        @ModelAttribute @Valid HolidayPageableDto holidayPageableDto
+    ) {
+        HolidaySearchResponse holidaysByConditions = holidayService.getHolidaysByCountry(holidayPageableDto, request);
         return ResponseEntity.status(HttpStatus.OK)
             .body(ResponseDto.success(ResponseCode.HOLIDAY_SEARCH_SUCCESS, holidaysByConditions));
     }

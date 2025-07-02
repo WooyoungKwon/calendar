@@ -2,6 +2,7 @@ package com.planit.calendar.holiday.domain;
 
 import com.planit.calendar.country.domain.Country;
 import com.planit.calendar.util.StringListConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
