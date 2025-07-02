@@ -1,22 +1,9 @@
 package com.planit.calendar.country.service;
 
-import com.planit.calendar.common.YearRange;
 import com.planit.calendar.country.domain.Country;
-import com.planit.calendar.country.dto.ChangeType;
-import com.planit.calendar.country.dto.ChangedDataCount;
 import com.planit.calendar.country.dto.CountryDto;
 import com.planit.calendar.country.repository.CountryRepository;
-import com.planit.calendar.holiday.domain.Holiday;
-import com.planit.calendar.holiday.dto.HolidayDto;
-import com.planit.calendar.holiday.repository.HolidayRepository;
-import com.planit.calendar.response.ResponseCode;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,8 +21,6 @@ public class CountryService {
 
     private final WebClient webClient;
     private final CountryRepository countryRepository;
-
-    private final HolidayRepository holidayRepository;
 
     // 외부 API를 통해 국가 데이터 조회
     public Mono<List<CountryDto>> fetchCountries() {

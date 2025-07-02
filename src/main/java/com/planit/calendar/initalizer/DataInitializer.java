@@ -60,6 +60,10 @@ public class DataInitializer {
         List<String> yearList = YearRange.getYearRange();
         List<Country> countryList = countryRepository.findAll();
 
+        saveHolidayWithWebclient(yearList, countryList);
+    }
+
+    private void saveHolidayWithWebclient(List<String> yearList, List<Country> countryList) {
         Flux.fromIterable(yearList)
             .flatMap(year -> Flux.fromIterable(countryList)
                 .flatMap(country -> {
