@@ -71,5 +71,5 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
         WHERE YEAR(h.date) = :year
         AND h.country.id = :countryId
         """)
-    void deleteByCountryAndYear(Long countryId, String year);
+    void deleteByCountryAndYear(Long countryId, int year);
 }

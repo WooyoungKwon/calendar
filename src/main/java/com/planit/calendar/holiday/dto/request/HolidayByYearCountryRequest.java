@@ -11,7 +11,7 @@ public class HolidayByYearCountryRequest {
     private Long countryId;
     private int year;
 
-    @AssertTrue(message = "동기화 가능한 연도는 2020년부터 2025년 사이여야 합니다.")
+    @AssertTrue(message = "요청 가능한 연도는 2020년부터 2025년 사이여야 합니다.")
     private boolean isBeforeYearInValidRange() {
         return year >= YearRange.START_YEAR.getYear() && year <= YearRange.END_YEAR.getYear();
     }

@@ -186,7 +186,9 @@ public class HolidayService {
 
         List<HolidayInfoDto> holidayInfoDtoList = HolidayInfoDto.from(holidayPage.getContent());
 
-        return HolidaySearchResponse.of(country.getName(), holidayPage.getTotalElements(),
+        String condition = String.format("국가: %s", country.getName());
+
+        return HolidaySearchResponse.of(condition, holidayPage.getTotalElements(),
             holidayPage.getTotalPages(), holidayInfoDtoList.size(),
             holidayInfoDtoList);
     }
@@ -347,7 +349,7 @@ public class HolidayService {
     }
 
     @Transactional
-    public void deleteAllByCountryAndYear(Long countryId, String year) {
+    public void deleteAllByCountryAndYear(Long countryId, int year) {
         Country country = countryRepository.findById(countryId)
             .orElseThrow(() -> new NotFoundException(ResponseCode.COUNTRY_NOT_FOUND.getMessage()));
 

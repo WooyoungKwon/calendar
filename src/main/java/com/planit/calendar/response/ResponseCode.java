@@ -11,6 +11,7 @@ public enum ResponseCode {
 
     // 국가 관련 코드
     COUNTRY_NOT_FOUND(404, "4011", "해당 국가를 찾을 수 없습니다."),
+    COUNTRY_FIND_SUCCESS(200, "2010", "국가 정보 조회 성공"),
     COUNTRY_LIST_SUCCESS(200, "2013", "국가 목록 조회 성공"),
 
     // 공휴일 관련 코드

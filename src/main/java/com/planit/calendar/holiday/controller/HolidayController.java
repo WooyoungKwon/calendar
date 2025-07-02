@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,7 +29,7 @@ public class HolidayController {
     private final HolidayService holidayService;
 
     @GetMapping("")
-    @Operation(summary = "나라와 연도 조건으로 공휴일 페이징", description = "파라미터로 받은 나라와 연도 시작, 연도 끝 사이에 있는 공휴일 데이터를 페이징하여 조회합니다.")
+    @Operation(summary = "나라와 연도 조건으로 공휴일 페이징 조회", description = "파라미터로 받은 나라와 연도 시작, 연도 끝 사이에 있는 공휴일 데이터를 페이징하여 조회합니다.")
     public ResponseEntity<ResponseDto<HolidaySearchResponse>> getHolidays(
         @ModelAttribute @Valid HolidaySearchRequest holidaySearchRequest,
         @ModelAttribute @Valid HolidayPageableDto holidayPageableDto
